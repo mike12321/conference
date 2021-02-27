@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Conference</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+    <link rel="stylesheet" href="/css/event-details.css">
+</head>
+<body>
+<header th:insert="/common/header :: Header"/>
+
+
+<div id="event-details-container" class="card">
+    <div th:text="${event.title}" class="card-header"></div>
+    <div class="card-body">
+        <h5 th:text="${event.title} + ' event confirmed topics'" class="card-title"></h5>
+        <p th:text="'Starts on ' + ${event.getDateTimeFormatted()}" class="text-justify"></p>
+        <div th:each="topic : ${eventTopics}" class="card-text">
+            <p th:text="${topic.title}"></p>
+            <form method="POST" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_SPEAKER')" th:action="@{/topic/edit}" th:object="${topic}">
+                <input type="hidden" th:value="${topic.id}" name="id"/>
+                <input type="hidden" th:value="${topic.eventId}" name="eventId"/>
+                <label for="updateSpeakerId">Update speaker:</label>
+                <input type="text" th:field="*{speakerId}" id="updateSpeakerId" />
+                <label for="setApproved">Approved:</label>
+                <input type="checkbox" name="approved" th:checked="${topic.approved}" id="setApproved"/>
+                <br/>
+                <button class="btn btn-primary">
+                    Update
+                </button>
+            </form>
+        </div>
+        <form sec:authorize="hasAnyAuthority('ROLE_USER')" method="POST" th:action="@{/event/assign/{id}(id=${event.getId()})}">
+            <button class="btn btn-primary">
+                Assign
+            </button>
+        </form>
+    </div>
+    <section id="event-details-controls">
+        <a sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:href="@{/event/edit/{id}(id=${event.id})}" class="btn btn-primary">Edit</a>
+        <form th:method="POST" sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:action="@{/event/delete/{id}(id=${event.getId()})}">
+            <button class="btn btn-primary">
+                Delete
+            </button>
+        </form>
+
+        <div sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_SPEAKER')">
+            <form method="POST" th:action="@{/topic/add/{id}(id=${event.getId()})}" th:object="${topic}" id="topic-form" class="modal">
+                <label for="title">Enter title:</label>
+                <input type="text" th:field="*{title}" id="title" required />
+                <br/>
+                <label for="speakerId">Assign speaker:</label>
+                <input type="text" th:field="*{speakerId}" id="speakerId" />
+                <br/>
+                <label for="approved">Approved:</label>
+                <input type="checkbox" th:field="*{approved}" id="approved" />
+                <br/>
+                <button class="btn btn-primary">
+                    Create
+                </button>
+            </form>
+            <a href="#topic-form" rel="modal:open" class="btn btn-primary">Add topic</a>
+        </div>
+    </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+
+</body>
+</html>

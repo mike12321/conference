@@ -1,0 +1,8 @@
+#event-details-container {
+    width: 90%;
+    margin: 0 auto;
+}
+
+#event-details-controls .btn {
+    margin: 12px 16px;
+}

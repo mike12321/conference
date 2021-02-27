@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+
+    <title>Main page</title>
+</head>
+<body>
+<header th:insert="/common/header :: Header"/>
+
+<table class="table table-dark">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">
+                <a th:href="@{'/page/' + ${currentPage} + '?sortField=title&sortDir=' + ${reverseSortDirection}}" th:text="#{title}">
+                    Title
+                </a>
+            </th>
+            <th scope="col">
+                <a th:href="@{'/page/' + ${currentPage} + '?sortField=dateTime&sortDir=' + ${reverseSortDirection}}">
+                    Date
+                </a>
+            </th>
+            <th scope="col">
+                <a th:href="@{'/page/' + ${currentPage} + '?sortField=topicCount&sortDir=' + ${reverseSortDirection}}">
+                    Topics
+                </a>
+            </th>
+            <th scope="col">
+                    Details
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="event, iter : ${listOfEvents}">
+            <th th:text="${iter.index + 1}" scope="row">#</th>
+            <td th:text="${event.title}"></td>
+            <td th:text="${event.getDateTimeFormatted()}"></td>
+            <td th:text="${event.getTopicCount()}"></td>
+            <td>
+                <a th:href="@{/event/{id}(id=${event.id})}">
+                    View Details
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div th:if = "${totalPages > 1}">
+    <div class = "row col-sm-10">
+        <div class = "col-sm-2">
+            Total Events: [[${totalEvents}]]
+        </div>
+        <div class = "col-sm-1">
+            <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+                <a th:if="${currentPage != i}" th:href="@{'/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDirection}}">[[${i}]]</a>
+                <span th:unless="${currentPage != i}">[[${i}]]</span>
+            </span>
+        </div>
+        <div class = "col-sm-1">
+            <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDirection}}">Next</a>
+            <span th:unless="${currentPage < totalPages}">Next</span>
+        </div>
+
+        <div class="col-sm-1">
+            <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDirection}}">Last</a>
+            <span th:unless="${currentPage < totalPages}">Last</span>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+</body>
+</html>

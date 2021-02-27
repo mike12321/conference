@@ -1,0 +1,30 @@
+<div th:fragment="Header">
+
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+        <a href="/" class="my-0 mr-md-auto font-weight-normal">Conference</a>
+
+        <div sec:authorize="isAuthenticated()">
+            Welcome <b><span sec:authentication="name">Username</span></b>
+        </div>
+        <nav class="my-2 my-md-0 mr-md-3">
+
+            <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+                <a class="p-2 text-dark" href="/event/new">New event</a>
+            </div>
+
+            <div sec:authorize="hasAnyAuthority('ROLE_SPEAKER')">
+                <a class="p-2 text-dark" href="#">Speaker</a>
+            </div>
+
+
+        </nav>
+        <nav class="my-2 my-md-0 mr-md-3">
+            <a href="?lang=en">ENG</a>
+            <a href="?lang=ru">RU</a>
+        </nav>
+
+        <a sec:authorize="!isAuthenticated()" class="btn btn-outline-success" href="/login">Login or sign up</a>
+        <a sec:authorize="isAuthenticated()" class="btn btn-outline-success" href="/logout">Logout</a>
+    </div>
+
+</div>
