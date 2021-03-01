@@ -6,7 +6,6 @@ import com.conference.entity.User;
 import com.conference.service.EventService;
 import com.conference.service.TopicService;
 import com.conference.service.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,8 +51,10 @@ public class EventController {
     public String getEventDetails(Model model, @PathVariable int id) {
         User user = getAuthenticatedUser();
         boolean showApprovedOnly = true;
+        boolean assigned = false;
 
         if (user != null) {
+            assigned = eventService.isUserAssigned(user.getId(),id);
             String role = user.getAuthorities().iterator().next().getAuthority();
             final String ROLE_ADMIN = "ROLE_ADMIN";
 
@@ -73,6 +74,7 @@ public class EventController {
         model.addAttribute("eventTopics", eventTopics);
         model.addAttribute("topic", topic);
         model.addAttribute("speaker", speaker);
+        model.addAttribute("assigned", assigned);
 
         return "event_details";
     }

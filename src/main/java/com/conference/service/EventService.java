@@ -3,6 +3,7 @@ package com.conference.service;
 import com.conference.entity.Event;
 import com.conference.dto.EventDTO;
 import com.conference.repository.EventRepository;
+import com.conference.repository.UserEventRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -14,11 +15,12 @@ import java.util.List;
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final UserEventRepository userEventRepository;
 
-    public EventService(EventRepository eventRepository) {
+    public EventService(EventRepository eventRepository, UserEventRepository userEventRepository) {
         this.eventRepository = eventRepository;
+        this.userEventRepository = userEventRepository;
     }
-
 
     public void save(Event event) {
         eventRepository.save(event);
@@ -58,6 +60,10 @@ public class EventService {
             return findEventDetailsSortedByTopicCount(page, size, sortDirection);
         }
 
+        if (sortField.equals("participantsCount")) {
+            return findEventDetailsPaginatedSortByParticipantsCount(page, size, sortDirection);
+        }
+
         return eventRepository.findEventDetailsPaginated(pageable);
     }
 
@@ -71,7 +77,21 @@ public class EventService {
         return eventRepository.findEventDetailsPaginatedSortByTopicCountDesc(pageRequest);
     }
 
+    public Page<EventDTO> findEventDetailsPaginatedSortByParticipantsCount(int page, int size, String sortDirection) {
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+
+        if (sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name())) {
+            return eventRepository.findEventDetailsPaginatedSortByParticipantsCountAsc(pageRequest);
+        }
+
+        return eventRepository.findEventDetailsPaginatedSortByParticipantsCountDesc(pageRequest);
+    }
+
     public void assignUserToEvent(long userId, long eventId) {
         eventRepository.assignUserToEvent(userId, eventId);
+    }
+
+    public boolean isUserAssigned(long userId, long eventId) {
+        return userEventRepository.existsByUserIdAndAndEventId(userId, eventId);
     }
 }

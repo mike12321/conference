@@ -20,6 +20,7 @@ public class EventDTO {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm a")
     private LocalDateTime dateTime;
     private Long topicCount;
+    private Long participantsCount;
 
     public String getDateTimeFormatted() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");

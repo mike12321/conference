@@ -18,22 +18,27 @@
         <tr>
             <th scope="col">#</th>
             <th scope="col">
-                <a th:href="@{'/page/' + ${currentPage} + '?sortField=title&sortDir=' + ${reverseSortDirection}}" th:text="#{title}">
+                <a th:href="@{'/page/' + ${currentPage} + '?sortField=title&sortDir=' + ${reverseSortDirection}}" th:text="#{main.title}">
                     Title
                 </a>
             </th>
             <th scope="col">
-                <a th:href="@{'/page/' + ${currentPage} + '?sortField=dateTime&sortDir=' + ${reverseSortDirection}}">
+                <a th:href="@{'/page/' + ${currentPage} + '?sortField=dateTime&sortDir=' + ${reverseSortDirection}}" th:text="#{main.date}">
                     Date
                 </a>
             </th>
             <th scope="col">
-                <a th:href="@{'/page/' + ${currentPage} + '?sortField=topicCount&sortDir=' + ${reverseSortDirection}}">
+                <a th:href="@{'/page/' + ${currentPage} + '?sortField=topicCount&sortDir=' + ${reverseSortDirection}}" th:text="#{main.topics}">
                     Topics
                 </a>
             </th>
             <th scope="col">
-                    Details
+                <a th:href="@{'/page/' + ${currentPage} + '?sortField=participantsCount&sortDir=' + ${reverseSortDirection}}" th:text="#{main.participants}">
+                    Participants
+                </a>
+            </th>
+            <th scope="col" th:text="#{main.details}">
+                Details
             </th>
         </tr>
     </thead>
@@ -43,8 +48,9 @@
             <td th:text="${event.title}"></td>
             <td th:text="${event.getDateTimeFormatted()}"></td>
             <td th:text="${event.getTopicCount()}"></td>
+            <td th:text="${event.getParticipantsCount()}"></td>
             <td>
-                <a th:href="@{/event/{id}(id=${event.id})}">
+                <a th:href="@{/event/{id}(id=${event.id})}" th:text="#{main.viewDetails}">
                     View Details
                 </a>
             </td>
@@ -54,7 +60,7 @@
 
 <div th:if = "${totalPages > 1}">
     <div class = "row col-sm-10">
-        <div class = "col-sm-2">
+        <div class = "col-sm-2" th:text="#{main.totalEvents} + ' ' + ${totalEvents}">
             Total Events: [[${totalEvents}]]
         </div>
         <div class = "col-sm-1">
@@ -65,16 +71,16 @@
         </div>
         <div class = "col-sm-1">
             <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDirection}}">Next</a>
-            <span th:unless="${currentPage < totalPages}">Next</span>
+            <span th:unless="${currentPage < totalPages}" th:text="#{main.next}">Next</span>
         </div>
 
         <div class="col-sm-1">
             <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDirection}}">Last</a>
-            <span th:unless="${currentPage < totalPages}">Last</span>
+            <span th:unless="${currentPage < totalPages}" th:text="#{main.last}">Last</span>
         </div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+
+<div th:insert="/common/scripts :: Scripts"/>
 </body>
 </html>

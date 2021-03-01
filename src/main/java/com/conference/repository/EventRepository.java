@@ -13,17 +13,51 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    @Query("SELECT new com.conference.dto.EventDTO(e.id, e.title, e.dateTime, count(t.eventId)) FROM Event e left join Topic t on e.id = t.eventId GROUP by e.id")
+    @Query("SELECT new com.conference.dto.EventDTO(e.id, e.title, e.dateTime, COUNT(t.eventId), COUNT(DISTINCT ue.userId)) " +
+            "FROM Event e " +
+            "LEFT JOIN Topic t ON e.id = t.eventId " +
+            "LEFT JOIN UserEvent ue ON e.id = ue.eventId " +
+            "GROUP BY e.id")
     List<EventDTO> findEventDetails();
 
-    @Query("SELECT new com.conference.dto.EventDTO(e.id, e.title, e.dateTime, count(t.eventId)) FROM Event e left join Topic t on e.id = t.eventId GROUP by e.id")
+    @Query("SELECT new com.conference.dto.EventDTO(e.id, e.title, e.dateTime, COUNT(t.eventId), COUNT(DISTINCT ue.userId)) " +
+            "FROM Event e " +
+            "LEFT JOIN Topic t ON e.id = t.eventId " +
+            "LEFT JOIN UserEvent ue ON e.id = ue.eventId " +
+            "GROUP BY e.id")
     Page<EventDTO> findEventDetailsPaginated(PageRequest pageRequest);
 
-    @Query("SELECT new com.conference.dto.EventDTO(e.id, e.title, e.dateTime, count(t.eventId)) FROM Event e left join Topic t on e.id = t.eventId GROUP by e.id ORDER BY count(t.eventId) ASC")
+    @Query("SELECT new com.conference.dto.EventDTO(e.id, e.title, e.dateTime, COUNT(t.eventId), COUNT(DISTINCT ue.userId)) " +
+            "FROM Event e " +
+            "LEFT JOIN Topic t ON e.id = t.eventId " +
+            "LEFT JOIN UserEvent ue ON e.id = ue.eventId " +
+            "GROUP BY e.id " +
+            "ORDER BY COUNT(t.eventId) ASC")
     Page<EventDTO> findEventDetailsPaginatedSortByTopicCountAsc(PageRequest pageRequest);
 
-    @Query("SELECT new com.conference.dto.EventDTO(e.id, e.title, e.dateTime, count(t.eventId)) FROM Event e left join Topic t on e.id = t.eventId GROUP by e.id ORDER BY count(t.eventId) DESC")
+    @Query("SELECT new com.conference.dto.EventDTO(e.id, e.title, e.dateTime, COUNT(t.eventId), COUNT(DISTINCT ue.userId)) " +
+            "FROM Event e " +
+            "LEFT JOIN Topic t ON e.id = t.eventId " +
+            "LEFT JOIN UserEvent ue ON e.id = ue.eventId " +
+            "GROUP BY e.id " +
+            "ORDER BY COUNT(t.eventId) DESC")
     Page<EventDTO> findEventDetailsPaginatedSortByTopicCountDesc(PageRequest pageRequest);
+
+    @Query("SELECT new com.conference.dto.EventDTO(e.id, e.title, e.dateTime, COUNT(t.eventId), COUNT(DISTINCT ue.userId)) " +
+            "FROM Event e " +
+            "LEFT JOIN Topic t ON e.id = t.eventId " +
+            "LEFT JOIN UserEvent ue ON e.id = ue.eventId " +
+            "GROUP BY e.id " +
+            "ORDER BY COUNT(DISTINCT ue.userId) ASC")
+    Page<EventDTO> findEventDetailsPaginatedSortByParticipantsCountAsc(PageRequest pageRequest);
+
+    @Query("SELECT new com.conference.dto.EventDTO(e.id, e.title, e.dateTime, COUNT(t.eventId), COUNT(DISTINCT ue.userId)) " +
+            "FROM Event e " +
+            "LEFT JOIN Topic t ON e.id = t.eventId " +
+            "LEFT JOIN UserEvent ue ON e.id = ue.eventId " +
+            "GROUP BY e.id " +
+            "ORDER BY COUNT(DISTINCT ue.userId) DESC")
+    Page<EventDTO> findEventDetailsPaginatedSortByParticipantsCountDesc(PageRequest pageRequest);
 
     @Modifying
     @Transactional

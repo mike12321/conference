@@ -35,11 +35,16 @@
                 </button>
             </form>
         </div>
-        <form sec:authorize="hasAnyAuthority('ROLE_USER')" method="POST" th:action="@{/event/assign/{id}(id=${event.getId()})}">
-            <button class="btn btn-primary">
-                Assign
-            </button>
-        </form>
+        <section sec:authorize="hasAnyAuthority('ROLE_USER')">
+            <form th:unless="${assigned}" sec:authorize="hasAnyAuthority('ROLE_USER')" method="POST" th:action="@{/event/assign/{id}(id=${event.getId()})}">
+                <button class="btn btn-success">
+                    Assign
+                </button>
+            </form>
+            <p th:if="${assigned}" class="text-success">
+                Already assigned
+            </p>
+        </section>
     </div>
     <section id="event-details-controls">
         <a sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:href="@{/event/edit/{id}(id=${event.id})}" class="btn btn-primary">Edit</a>
