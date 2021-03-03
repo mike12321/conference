@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -20,10 +21,12 @@ public class Event {
     private Long id;
 
     @Column
+    @NotEmpty( message = "Title can't be empty")
     private String title;
 
     @Column
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm a")
+    @NotEmpty( message = "Time can't be empty")
     private LocalDateTime dateTime;
 
     public String getDateTimeFormatted() {

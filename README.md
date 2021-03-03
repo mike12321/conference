@@ -1,0 +1,1 @@
+![alt text](https://github.com/mike12321/conference/blob/master/db-schema.jpg?raw=true)

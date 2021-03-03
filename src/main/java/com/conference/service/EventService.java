@@ -22,8 +22,8 @@ public class EventService {
         this.userEventRepository = userEventRepository;
     }
 
-    public void save(Event event) {
-        eventRepository.save(event);
+    public Event save(Event event) {
+        return eventRepository.save(event);
     }
 
     public List<Event> listAll() {

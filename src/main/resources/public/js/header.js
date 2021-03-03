@@ -15,15 +15,17 @@ function handleLocaleChange( event ) {
     let redirectUrl = '';
 
     if ( window.location.search ) {
-        const localeParamIndex = window.location.href.search( 'lang' );
+        const href = window.location.href;
+        const localeParamIndex = href.search( 'lang' );
+        const locale = event.target.dataset;
 
         if ( localeParamIndex > 0 ) {
-            const replaceString = `lang=${ event.target.dataset.locale }`;
+            const replaceString = `lang=${ locale.locale }`;
 
-            redirectUrl = `${ window.location.href.substring( 0, localeParamIndex ) }${ replaceString }${ window.location.href.substring( localeParamIndex + replaceString.length ) }`;
+            redirectUrl = `${ href.substring( 0, localeParamIndex ) }${ replaceString }${ href.substring( localeParamIndex + replaceString.length ) }`;
         }
         else {
-            redirectUrl = `${ window.location.href }&lang=${ event.target.dataset.locale }`;
+            redirectUrl = `${ href }&lang=${ locale.locale }`;
         }
     }
     else {

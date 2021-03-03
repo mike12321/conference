@@ -64,4 +64,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query(value = "INSERT INTO user_event (user_id, event_id) VALUES (:userId, :eventId)",
             nativeQuery = true)
     void assignUserToEvent(long userId, long eventId);
+
+    Event findByTitle(String title);
+
+    boolean removeByTitle(String title);
 }

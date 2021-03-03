@@ -2,8 +2,11 @@ package com.conference.controller;
 
 import com.conference.dto.EventDTO;
 import com.conference.entity.User;
+import com.conference.exception.ResourceNotFoundException;
 import com.conference.service.EventService;
 import com.conference.service.UserDetailsServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +18,8 @@ import java.util.List;
 
 @Controller
 public class UserController {
+
+    private final static Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final EventService eventService;
 
@@ -40,10 +45,14 @@ public class UserController {
         }
         if (!userForm.getPassword().equals(userForm.getPasswordConfirm())) {
             model.addAttribute("error", "Passwords are not match");
+            logger.warn("Passwords doesn't match");
+
             return "registration";
         }
         if (!userService.saveUser(userForm)) {
             model.addAttribute("error", "That username is already taken");
+            logger.warn("User already exists");
+
             return "registration";
         }
 
@@ -73,6 +82,13 @@ public class UserController {
         Page<EventDTO> page = eventService.findEventDetailsPaginated(pageNo, size, sortField, sortDirection);
         List<EventDTO> eventDTOS = page.getContent();
 
+        logger.info("Main Page");
+
+        if (pageNo > page.getTotalPages() || pageNo <= 0) {
+            logger.error("That's page doesn't exist");
+            throw new ResourceNotFoundException();
+        }
+
         model.addAttribute("listOfEvents", eventDTOS);
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
@@ -82,5 +98,10 @@ public class UserController {
         model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
 
         return "main";
+    }
+
+    @GetMapping("/error")
+    public String errorPage() {
+        return "error";
     }
 }

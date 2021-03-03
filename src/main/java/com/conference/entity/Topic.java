@@ -3,6 +3,7 @@ package com.conference.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
@@ -18,12 +19,14 @@ public class Topic {
     private Long id;
 
     @Column
+    @NotEmpty(message = "Title can't be empty")
     private String title;
 
     @Column
     private Long speakerId;
 
     @Column
+    @NotEmpty
     private Long eventId;
 
     @Column
